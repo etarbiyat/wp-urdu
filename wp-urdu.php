@@ -12,7 +12,6 @@ Requires at least: 5.0
 Tested up to: 6.3
 Requires PHP: 7.0
 Text Domain: wp-urdu
-Domain Path: /languages
 */
 
 if ( !defined( 'ABSPATH' ) ) {
