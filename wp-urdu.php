@@ -2,10 +2,17 @@
 /*
 Plugin Name: WP Urdu
 Plugin URI: https://github.com/etarbiyat/wp-urdu
-Description: Adds Urdu language support in WordPress with Native Urdu font, including a Gutenberg block style.
+Description: Adds support for Urdu language with Urdu font, including a Gutenberg block style and phonetic keyboard input.
 Version: 1.0
-Author: Etarbiyat.com
+Author: Etarbiyat
 Author URI: https://etarbiyat.com/
+License: GPL-2.0+
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Requires at least: 5.0
+Tested up to: 6.3
+Requires PHP: 7.0
+Text Domain: wp-urdu
+Domain Path: /languages
 */
 
 if ( !defined( 'ABSPATH' ) ) {
