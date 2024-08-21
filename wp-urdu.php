@@ -76,7 +76,6 @@ add_action('admin_menu', 'wp_urdu_add_admin_menu');
 function wp_urdu_settings_page() {
     ?>
     <div class="wrap">
-        <h1>WP Urdu Settings</h1>
         <form method="post" action="options.php">
             <?php
             settings_fields('wp_urdu_settings_group');
@@ -84,6 +83,9 @@ function wp_urdu_settings_page() {
             submit_button();
             ?>
         </form>
+        <div style="padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; text-align: center; font-family: Arial, sans-serif;">
+            <p><strong>WP Urdu</strong> is an open source plugin developed by <a href="https://etarbiyat.com" target="_blank" rel="noopener noreferrer">Etarbiyat.com</a>. Use this repo <a href="https://github.com/etarbiyat/wp-urdu/" target="_blank" rel="noopener noreferrer">https://github.com/etarbiyat/wp-urdu/</a> to contribute to making it the strongest Urdu language plugin.</p>
+        </div>
     </div>
     <?php
 }
@@ -128,7 +130,7 @@ function wp_urdu_shortcut_render() {
     $options = get_option('wp_urdu_settings');
     $shortcut = isset($options['wp_urdu_shortcut']) ? $options['wp_urdu_shortcut'] : 't';
     ?>
-    <input type="text" name="wp_urdu_settings[wp_urdu_shortcut]" value="<?php echo esc_attr($shortcut); ?>" />
+    <span style="padding: 5px 7px 5px 7px; background: #1d2327; border-radius: 10px; color: #fff;">Alt</span> + <input type="text" name="wp_urdu_settings[wp_urdu_shortcut]" value="<?php echo esc_attr($shortcut); ?>" />
     <p class="description">Enter the key you want to use for toggling Urdu typing (e.g., 't').</p>
     <?php
 }
@@ -149,7 +151,7 @@ function wp_urdu_block_style_shortcut_render() {
     $options = get_option('wp_urdu_settings');
     $block_style_shortcut = isset($options['wp_urdu_block_style_shortcut']) ? $options['wp_urdu_block_style_shortcut'] : 'b';
     ?>
-    <input type="text" name="wp_urdu_settings[wp_urdu_block_style_shortcut]" value="<?php echo esc_attr($block_style_shortcut); ?>" />
+    <span style="padding: 5px 7px 5px 7px; background: #1d2327; border-radius: 10px; color: #fff;">Alt</span> + <input type="text" name="wp_urdu_settings[wp_urdu_block_style_shortcut]" value="<?php echo esc_attr($block_style_shortcut); ?>" />
     <p class="description">Enter the key you want to use for applying Urdu style to selected blocks (e.g., 'b').</p>
     <?php
 }
