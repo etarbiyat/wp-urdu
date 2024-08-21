@@ -69,40 +69,53 @@ const urduPhoneticMap = {
     '0': '۰', // Number 0
 };
 
-// Urdu Phonetic Keyboard Function for contentEditable elements
-function UrduPhoneticKeyboard(element) {
+// Urdu Phonetic Keyboard Function
+function UrduPhoneticKeyboard(element, isTitle) {
     let typingMode = 'urdu'; // Default to Urdu typing mode
+    const shortcutKey = wp_urdu_settings.wp_urdu_shortcut || 't'; // Use localized shortcut key
+    const blockStyleShortcutKey = wp_urdu_settings.wp_urdu_block_style_shortcut || 'b'; // Use localized block style shortcut
+    const applyToTitles = wp_urdu_settings.wp_urdu_title_option === 'yes'; // Use localized setting
+
+    // Check if the element should support Urdu typing
+    const shouldApplyUrdu = !isTitle || applyToTitles;
 
     document.addEventListener('keydown', function (e) {
-        if (e.altKey && e.key === 't') { // Toggle with Alt+T
+        if (e.altKey && e.key === shortcutKey) { // Toggle with user-defined shortcut
             typingMode = (typingMode === 'urdu') ? 'english' : 'urdu';
             e.preventDefault();
             console.log(`Typing mode switched to: ${typingMode}`);
         }
-    });
 
-    element.addEventListener('beforeinput', function (e) {
-        if (typingMode === 'urdu') {
-            // Check if the input is Urdu based on mapping
-            if (urduPhoneticMap[e.data]) {
-                e.preventDefault();
-                insertAtCursor(element, urduPhoneticMap[e.data]);
+        if (e.altKey && e.key === blockStyleShortcutKey) { // Apply Urdu style to selected blocks
+            e.preventDefault();
+            const selectedBlocks = wp.data.select('core/block-editor').getSelectedBlock();
+            if (selectedBlocks) {
+                wp.data.dispatch('core/block-editor').updateBlockAttributes(selectedBlocks.clientId, {
+                    className: selectedBlocks.attributes.className ? selectedBlocks.attributes.className + ' is-style-wp-urdu' : 'is-style-wp-urdu'
+                });
             }
-        } else if (typingMode === 'english') {
-            // Allow English text input
         }
     });
+
+    if (shouldApplyUrdu) {
+        element.addEventListener('beforeinput', function (e) {
+            if (typingMode === 'urdu') {
+                if (urduPhoneticMap[e.data]) {
+                    e.preventDefault();
+                    insertAtCursor(element, urduPhoneticMap[e.data]);
+                }
+            }
+        });
+    }
 
     function insertAtCursor(element, text) {
         const selection = window.getSelection();
         const range = selection.getRangeAt(0);
 
-        // Create a new text node and insert it
         const textNode = document.createTextNode(text);
         range.deleteContents();
         range.insertNode(textNode);
 
-        // Move the cursor to the end of the inserted text
         range.setStartAfter(textNode);
         range.setEndAfter(textNode);
         selection.removeAllRanges();
@@ -110,13 +123,8 @@ function UrduPhoneticKeyboard(element) {
     }
 }
 
-// Run the Urdu Phonetic Keyboard setup on WP DOM ready
+// Run Urdu Phonetic Keyboard setup on WP DOM ready
 wp.domReady(() => {
-    wp.blocks.registerBlockStyle('core/paragraph', {
-        name: 'wp-urdu',
-        label: 'WP Urdu',
-    });
-
     const applyRTLAndKeyboard = () => {
         const blocks = document.querySelectorAll('.is-style-wp-urdu');
         blocks.forEach(block => {
@@ -125,9 +133,22 @@ wp.domReady(() => {
 
             if (!block.hasAttribute('data-urdu-keyboard')) {
                 block.setAttribute('data-urdu-keyboard', 'true');
-                UrduPhoneticKeyboard(block);
+                UrduPhoneticKeyboard(block, false); // Not a title
             }
         });
+
+        // Apply Urdu typing conditionally in the post title field
+        const titleField = document.querySelector('.editor-post-title__input');
+        if (titleField) {
+            const urduMode = titleField.getAttribute('data-urdu-keyboard') === 'true';
+            titleField.style.direction = urduMode ? 'rtl' : 'ltr';
+            titleField.style.textAlign = urduMode ? 'right' : 'left';
+
+            if (!titleField.hasAttribute('data-urdu-keyboard')) {
+                titleField.setAttribute('data-urdu-keyboard', 'true');
+                UrduPhoneticKeyboard(titleField, true); // It's a title
+            }
+        }
     };
 
     applyRTLAndKeyboard();
