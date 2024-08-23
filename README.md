@@ -1,5 +1,5 @@
 # WP Urdu
-**WP Urdu** is a WordPress plugin that adds support for the Urdu language, including a custom Gutenberg block style and phonetic keyboard input.
+**WP Urdu** is a WordPress plugin that adds support for the Urdu typing in posts and pages, including a custom Gutenberg block style and phonetic keyboard input.
 
 ## Features
 - Apply Urdu style to Gutenberg blocks with RTL support.
