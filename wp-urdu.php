@@ -14,22 +14,26 @@ Requires PHP: 7.0
 */
 
 if ( !defined( 'ABSPATH' ) ) {
-    exit;
-    // Exit if accessed directly.
+    exit; // Exit if accessed directly.
 }
 
+/**
+ * Enqueue plugin assets.
+ */
 function wp_urdu_enqueue_assets() {
-    // Enqueue the Noto Nastaliq Urdu font
-    wp_enqueue_style( 'wp-urdu-font', plugin_dir_url( __FILE__ ) . 'fonts/notonastaliqurdu.css' );
+    // Register and enqueue the Noto Nastaliq Urdu font
+    wp_register_style( 'wp-urdu-font', plugin_dir_url( __FILE__ ) . 'fonts/notonastaliqurdu.css' );
+    wp_enqueue_style( 'wp-urdu-font' );
 
-    // Enqueue block editor styles and scripts
-    wp_enqueue_script(
+    // Register and enqueue block editor script
+    wp_register_script(
         'wp-urdu-editor-script',
         plugin_dir_url( __FILE__ ) . 'wp-urdu-editor.js',
         array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post' ),
         filemtime( plugin_dir_path( __FILE__ ) . 'wp-urdu-editor.js' ),
         true
     );
+    wp_enqueue_script( 'wp-urdu-editor-script' );
 
     // Localize the script with plugin settings
     $wp_urdu_settings = get_option('wp_urdu_settings', array(
@@ -38,7 +42,7 @@ function wp_urdu_enqueue_assets() {
     ));
     wp_localize_script('wp-urdu-editor-script', 'wp_urdu_settings', $wp_urdu_settings);
 
-    // Add custom styles for block editor to apply RTL and font
+    // Add custom styles for block editor
     wp_add_inline_style( 'wp-urdu-font', '
         .is-style-wp-urdu {
             font-family: "Noto Nastaliq Urdu", serif !important;
@@ -51,6 +55,9 @@ function wp_urdu_enqueue_assets() {
 }
 add_action( 'enqueue_block_editor_assets', 'wp_urdu_enqueue_assets' );
 
+/**
+ * Register custom block styles.
+ */
 function wp_urdu_register_block_styles() {
     register_block_style(
         'core/paragraph',
@@ -62,6 +69,9 @@ function wp_urdu_register_block_styles() {
 }
 add_action( 'init', 'wp_urdu_register_block_styles' );
 
+/**
+ * Add admin menu for plugin settings.
+ */
 function wp_urdu_add_admin_menu() {
     add_options_page(
         'WP Urdu Settings',
@@ -73,9 +83,13 @@ function wp_urdu_add_admin_menu() {
 }
 add_action('admin_menu', 'wp_urdu_add_admin_menu');
 
+/**
+ * Render plugin settings page.
+ */
 function wp_urdu_settings_page() {
     ?>
     <div class="wrap">
+        <h1>WP Urdu Settings</h1>
         <form method="post" action="options.php">
             <?php
             settings_fields('wp_urdu_settings_group');
@@ -90,6 +104,9 @@ function wp_urdu_settings_page() {
     <?php
 }
 
+/**
+ * Initialize plugin settings.
+ */
 function wp_urdu_settings_init() {
     register_setting('wp_urdu_settings_group', 'wp_urdu_settings');
 
@@ -126,15 +143,22 @@ function wp_urdu_settings_init() {
 }
 add_action('admin_init', 'wp_urdu_settings_init');
 
+/**
+ * Render the shortcut input field.
+ */
 function wp_urdu_shortcut_render() {
     $options = get_option('wp_urdu_settings');
-    $shortcut = isset($options['wp_urdu_shortcut']) ? $options['wp_urdu_shortcut'] : 't';
+    $shortcut = isset($options['wp_urdu_shortcut']) ? esc_attr($options['wp_urdu_shortcut']) : 't';
     ?>
-    <span style="padding: 5px 7px 5px 7px; background: #1d2327; border-radius: 10px; color: #fff;">Alt</span> + <input type="text" name="wp_urdu_settings[wp_urdu_shortcut]" value="<?php echo esc_attr($shortcut); ?>" />
+    <span style="padding: 5px 7px; background: #1d2327; border-radius: 10px; color: #fff;">Alt</span> + 
+    <input type="text" name="wp_urdu_settings[wp_urdu_shortcut]" value="<?php echo $shortcut; ?>" />
     <p class="description">Enter the key you want to use for toggling Urdu typing (e.g., 't').</p>
     <?php
 }
 
+/**
+ * Render the title option select field.
+ */
 function wp_urdu_title_option_render() {
     $options = get_option('wp_urdu_settings');
     $apply_to_titles = isset($options['wp_urdu_title_option']) ? $options['wp_urdu_title_option'] : 'no';
@@ -147,11 +171,15 @@ function wp_urdu_title_option_render() {
     <?php
 }
 
+/**
+ * Render the block style shortcut input field.
+ */
 function wp_urdu_block_style_shortcut_render() {
     $options = get_option('wp_urdu_settings');
-    $block_style_shortcut = isset($options['wp_urdu_block_style_shortcut']) ? $options['wp_urdu_block_style_shortcut'] : 'b';
+    $block_style_shortcut = isset($options['wp_urdu_block_style_shortcut']) ? esc_attr($options['wp_urdu_block_style_shortcut']) : 'b';
     ?>
-    <span style="padding: 5px 7px 5px 7px; background: #1d2327; border-radius: 10px; color: #fff;">Alt</span> + <input type="text" name="wp_urdu_settings[wp_urdu_block_style_shortcut]" value="<?php echo esc_attr($block_style_shortcut); ?>" />
+    <span style="padding: 5px 7px; background: #1d2327; border-radius: 10px; color: #fff;">Alt</span> + 
+    <input type="text" name="wp_urdu_settings[wp_urdu_block_style_shortcut]" value="<?php echo $block_style_shortcut; ?>" />
     <p class="description">Enter the key you want to use for applying Urdu style to selected blocks (e.g., 'b').</p>
     <?php
 }
