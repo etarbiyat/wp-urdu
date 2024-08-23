@@ -140,9 +140,9 @@ wp.domReady(() => {
         // Apply Urdu typing conditionally in the post title field
         const titleField = document.querySelector('.editor-post-title__input');
         if (titleField) {
-            const urduMode = titleField.getAttribute('data-urdu-keyboard') === 'true';
-            titleField.style.direction = urduMode ? 'rtl' : 'ltr';
-            titleField.style.textAlign = urduMode ? 'right' : 'left';
+            const isUrduMode = wp_urdu_settings.wp_urdu_title_option === 'yes';
+            titleField.style.direction = isUrduMode ? 'rtl' : 'ltr';
+            titleField.style.textAlign = isUrduMode ? 'right' : 'left';
 
             if (!titleField.hasAttribute('data-urdu-keyboard')) {
                 titleField.setAttribute('data-urdu-keyboard', 'true');
