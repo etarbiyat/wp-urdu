@@ -34,4 +34,4 @@ Feel free to contribute to this project by submitting issues or pull requests on
 
 This plugin is licensed under the [MIT](https://github.com/etarbiyat/wp-urdu/blob/7f7311103556f40b9024d7ad193e979d813997c9/LICENSE) license.
 
-_Happy coding!_
+Happy coding ❤️
